@@ -4,25 +4,42 @@
     que coge tus datos del archivo datos.js y los muestra en la web.)
    =================================================================== */
 
-// Aquí se guardarán los productos y categorías leídos de "productos.csv"
+// Aquí se guardarán los productos y categorías
 let PRODUCTOS = [];
 let CATEGORIAS = [];
 
 /* -------------------------------------------------------------------
-   LECTOR DE "productos.csv"
-   Lee el archivo productos.csv y lo convierte en la lista de productos.
-   El CSV usa punto y coma (;) como separador (compatible con Excel español).
+   LECTOR DE PRODUCTOS
+   - Si en datos.js has puesto la dirección de tu Hoja de Google
+     (NEGOCIO.hojaGoogle), lee los productos de ahí.
+   - Si no, lee del archivo local "productos.csv" (respaldo).
    ------------------------------------------------------------------- */
 async function cargarProductos() {
-  try {
-    const respuesta = await fetch("productos.csv?v=" + Date.now());
-    if (!respuesta.ok) throw new Error("No se encontró productos.csv");
-    const texto = await respuesta.text();
-    PRODUCTOS = analizarCSV(texto);
-  } catch (e) {
-    console.warn("Aviso al cargar productos.csv:", e.message);
-    PRODUCTOS = [];
+  let texto = "";
+  const hoja = (typeof NEGOCIO !== "undefined" && NEGOCIO.hojaGoogle) ? NEGOCIO.hojaGoogle.trim() : "";
+
+  // 1) Intentar leer de la Hoja de Google si está configurada
+  if (hoja) {
+    try {
+      const respuesta = await fetch(hoja + (hoja.indexOf("?") === -1 ? "?" : "&") + "_=" + Date.now());
+      if (respuesta.ok) texto = await respuesta.text();
+    } catch (e) {
+      console.warn("No se pudo leer la Hoja de Google, uso productos.csv:", e.message);
+    }
   }
+
+  // 2) Si no hay hoja o falló, leer el archivo local productos.csv
+  if (!texto) {
+    try {
+      const respuesta = await fetch("productos.csv?v=" + Date.now());
+      if (respuesta.ok) texto = await respuesta.text();
+    } catch (e) {
+      console.warn("Aviso al cargar productos.csv:", e.message);
+    }
+  }
+
+  PRODUCTOS = texto ? analizarCSV(texto) : [];
+
   // Las categorías se sacan solas de los productos (en orden de aparición)
   CATEGORIAS = [];
   PRODUCTOS.forEach(p => {
@@ -30,40 +47,48 @@ async function cargarProductos() {
   });
 }
 
-// Convierte el texto del CSV en una lista de productos
+// Convierte el texto del CSV en una lista de productos.
+// Detecta solo el separador: coma (Google) o punto y coma (Excel español).
 function analizarCSV(texto) {
   const lineas = texto.replace(/\r/g, "").split("\n").filter(l => l.trim() !== "");
   if (lineas.length < 2) return [];
-  const cabeceras = lineas[0].split(";").map(h => h.trim().toLowerCase());
+
+  // Si la primera línea tiene algún ; usamos ; ; si no, usamos ,
+  const sep = lineas[0].indexOf(";") !== -1 ? ";" : ",";
+  const cabeceras = partirLinea(lineas[0], sep).map(h => h.trim().toLowerCase());
   const productos = [];
 
   for (let i = 1; i < lineas.length; i++) {
-    const celdas = partirLinea(lineas[i]);
+    const celdas = partirLinea(lineas[i], sep);
     const fila = {};
     cabeceras.forEach((cab, j) => { fila[cab] = (celdas[j] || "").trim(); });
 
     // "destacado": acepta si / sí / x / true / 1
     const dest = (fila.destacado || "").toLowerCase();
+    // La imagen puede ser un nombre de archivo (carpeta imagenes) o un enlace https completo
+    let img = fila.imagen || "";
+    if (img && img.indexOf("http") !== 0) img = "imagenes/" + img;
+
     productos.push({
       nombre: fila.nombre || "",
       categoria: fila.categoria || "",
       precio: fila.precio || "",
       descripcion: fila.descripcion || "",
-      imagen: fila.imagen ? "imagenes/" + fila.imagen : "",
+      imagen: img,
       destacado: ["si", "sí", "x", "true", "1"].indexOf(dest) !== -1
     });
   }
   return productos.filter(p => p.nombre); // ignora filas sin nombre
 }
 
-// Separa una línea por ; respetando el texto entre comillas
-function partirLinea(linea) {
+// Separa una línea por el separador indicado, respetando texto entre comillas
+function partirLinea(linea, sep) {
   const resultado = [];
   let actual = "", dentroComillas = false;
   for (let i = 0; i < linea.length; i++) {
     const c = linea[i];
     if (c === '"') { dentroComillas = !dentroComillas; }
-    else if (c === ";" && !dentroComillas) { resultado.push(actual); actual = ""; }
+    else if (c === sep && !dentroComillas) { resultado.push(actual); actual = ""; }
     else { actual += c; }
   }
   resultado.push(actual);

@@ -47,5 +47,12 @@ const NEGOCIO = {
   instagram: "https://www.instagram.com/decoracionesmihogar/",
 
   // Mapa de Google (vacío "" para mostrar solo un botón a Google Maps)
-  mapa: "https://maps.google.com/maps?q=Calle%20Obispo%20P%C3%A9rez%20C%C3%A1ceres%2044%2C%20San%20Crist%C3%B3bal%20de%20La%20Laguna%2038205&output=embed"
+  mapa: "https://maps.google.com/maps?q=Calle%20Obispo%20P%C3%A9rez%20C%C3%A1ceres%2044%2C%20San%20Crist%C3%B3bal%20de%20La%20Laguna%2038205&output=embed",
+
+  // HOJA DE GOOGLE con los productos (opcional).
+  //   - Si la dejas vacía "", la web usa el archivo local "productos.csv".
+  //   - Si pegas aquí el enlace de publicación CSV de tu Hoja de Google,
+  //     los productos saldrán de ahí y podrás editarlos desde el móvil.
+  //   (En la GUIA-DE-USO.md, punto 8, te explico cómo conseguir ese enlace.)
+  hojaGoogle: ""
 };

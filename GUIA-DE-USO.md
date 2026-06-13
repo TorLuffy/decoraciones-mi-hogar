@@ -145,4 +145,44 @@ Cuando tengas un **dominio propio** (por ejemplo
 
 ---
 
+## 8. Gestionar los productos desde una Hoja de Google (recomendado)
+
+En vez de usar `productos.csv` en el ordenador, puedes manejar los
+productos desde una **Hoja de cálculo de Google** (Google Sheets). Así
+los editas **desde el móvil o cualquier sitio** y la web se actualiza
+sola, sin tener que volver a publicar nada.
+
+### Cómo se monta (una sola vez)
+1. Entra en **drive.google.com** con tu cuenta y crea una **Hoja de
+   cálculo** nueva. Ponle de nombre, por ejemplo, "Productos web".
+2. En la **primera fila**, escribe estos títulos, uno por columna:
+
+   `nombre` · `categoria` · `precio` · `descripcion` · `imagen` · `destacado`
+
+3. Rellena debajo tus productos, una fila por producto (igual que en la
+   tabla del punto 3).
+4. Arriba: menú **Archivo → Compartir → Publicar en la web**.
+5. En la ventana, elige:
+   - Pestaña **"Enlace"**.
+   - En el primer desplegable, deja **la hoja** (Hoja 1).
+   - En el segundo desplegable, elige **"Valores separados por comas (.csv)"**.
+   - Pulsa **Publicar** y acepta.
+6. Copia el **enlace** que te da (termina en algo como `...output=csv`).
+7. Pégalo en el archivo `js/datos.js`, en la línea `hojaGoogle: ""`,
+   entre las comillas. Guarda y publica la web una última vez.
+
+¡Listo! A partir de ahí, **solo editas la Hoja de Google** y la web
+muestra los cambios sola (puede tardar unos minutos en refrescar).
+
+### Las fotos
+Las fotos siguen yendo en la carpeta **`imagenes`** (es lo más fiable).
+En la columna `imagen` de la hoja escribe el nombre de la foto
+(ej.: `cortinas.jpg`). Cuando tengas fotos nuevas, pásamelas y las subo.
+
+> ⚠️ No conviene poner las fotos directamente en Google Drive: Google
+> suele bloquear esos enlaces y las fotos dejan de verse. Por eso las
+> fotos van en la carpeta `imagenes`.
+
+---
+
 ¿Dudas? Apunta lo que quieras cambiar y lo vemos juntos. 🙂
