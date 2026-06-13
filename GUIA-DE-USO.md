@@ -46,46 +46,45 @@ Así funcionarán todos los botones verdes de WhatsApp de la web.
 
 ---
 
-## 3. Cómo añadir o cambiar productos
+## 3. Cómo añadir o cambiar productos (¡con Excel!)
 
-En el mismo archivo `datos.js`, baja hasta la parte **`TUS PRODUCTOS`**.
+Los productos están en el archivo **`productos.csv`**, que se abre con
+**Excel** (o con el programa de hojas de cálculo que tengas). Es como una
+tabla: **cada fila es un producto**.
 
-Cada producto es un bloque así:
+### ▶️ Cómo abrirlo
+Haz doble clic en **`productos.csv`**. Se abre con Excel y verás columnas:
 
-```
-{
-  nombre: "Juego de sábanas 100% algodón",
-  categoria: "Ropa de cama",
-  precio: "34,99 €",
-  descripcion: "Suaves y transpirables.",
-  imagen: "sabanas.jpg",
-  destacado: true
-},
-```
+| nombre | categoria | precio | descripcion | imagen | destacado |
+|--------|-----------|--------|-------------|--------|-----------|
+| Juego de sábanas | Ropa de cama | 34,99 € | Suaves y transpirables | sabanas.jpg | si |
 
-### ➕ Para AÑADIR un producto nuevo
-1. Copia un bloque entero (desde la `{` hasta la `},`).
-2. Pégalo justo debajo.
-3. Cambia los textos por los del producto nuevo.
+### ➕ Para AÑADIR un producto
+Escribe una **fila nueva** debajo de las demás, rellenando cada columna.
 
 ### ✏️ Para CAMBIAR un producto
-Solo edita el texto entre comillas (nombre, precio, descripción...).
+Edita la celda que quieras (el precio, el nombre...). Como en cualquier Excel.
 
 ### ❌ Para QUITAR un producto
-Borra su bloque entero, desde la `{` hasta la `},`.
+Borra su fila entera (clic derecho en el número de la fila → Eliminar).
 
-### Qué significa cada línea
-| Campo | Qué poner |
-|-------|-----------|
-| `nombre` | El nombre del producto |
-| `categoria` | Una de las categorías (ver punto 5). **Escríbela igual.** |
-| `precio` | El precio, como tú quieras: `"29,99 €"` o `"Consultar"` |
-| `descripcion` | Una frase corta sobre el producto |
-| `imagen` | El nombre de la foto (ver punto 4). Vacío `""` = dibujo gris |
-| `destacado` | `true` para que salga en "Destacados", o `false` si no |
+### Qué poner en cada columna
+| Columna | Qué poner |
+|---------|-----------|
+| **nombre** | El nombre del producto |
+| **categoria** | La categoría. Los botones de filtro se crean solos según lo que escribas aquí. Escribe igual las que se repiten (ej.: siempre "Cortinas"). |
+| **precio** | El precio, como quieras: `29,99 €` o `Consultar` |
+| **descripcion** | Una frase corta sobre el producto |
+| **imagen** | El nombre de la foto (ver punto 4). Déjalo **vacío** si no hay foto. |
+| **destacado** | Escribe `si` para que salga en "Destacados", o déjalo vacío / `no` |
 
-> ⚠️ No borres las comas `,` ni las llaves `{ }`. Son las que mantienen
-> todo ordenado. Si algo deja de verse, casi siempre es una coma que falta.
+### 💾 MUY IMPORTANTE al guardar con Excel
+Cuando guardes, Excel puede preguntar si mantener el formato **CSV**.
+Responde **Sí / Mantener formato actual**. El archivo debe seguir
+llamándose `productos.csv`.
+
+> 💡 Si exportas productos desde tu programa de tienda (Sysme), puedes
+> pegar esa información en estas mismas columnas para no escribir a mano.
 
 ---
 
@@ -94,11 +93,8 @@ Borra su bloque entero, desde la `{` hasta la `},`.
 1. Guarda la foto del producto en la carpeta **`imagenes`**.
    - Mejor que el nombre sea sencillo, **sin espacios ni acentos**.
      Ejemplos: `sabanas.jpg`, `cafetera.jpg`, `colchon.jpg`.
-2. En `datos.js`, en la línea `imagen:` de ese producto, escribe el
-   nombre de la foto entre comillas:
-   ```
-   imagen: "sabanas.jpg",
-   ```
+2. En `productos.csv` (con Excel), escribe el nombre de la foto en la
+   columna **imagen** de ese producto. Por ejemplo: `sabanas.jpg`
 3. Guarda y actualiza (F5).
 
 💡 Consejo: usa fotos no demasiado grandes (las del móvil sirven
@@ -109,17 +105,15 @@ dibujo gris y **no se rompe nada**.
 
 ## 5. Las categorías
 
-Los botones para filtrar productos salen de la lista `CATEGORIAS`
-(en `datos.js`). Vienen estas:
+¡Buena noticia! Las categorías (los botones para filtrar) **se crean
+solas**. La web mira la columna **categoria** de `productos.csv` y crea
+un botón por cada categoría distinta que encuentre.
 
-- Decoración
-- Ropa de cama
-- Cortinas
-- Colchones
-- Pequeños electrodomésticos
-
-Puedes añadir o quitar categorías en esa lista. **Importante:** la
-`categoria` de cada producto debe escribirse **igual** que en la lista.
+- Para crear una categoría nueva: simplemente escríbela en la columna
+  `categoria` de un producto.
+- **Importante:** escribe igual las categorías que se repiten (por
+  ejemplo, siempre "Cortinas", no "cortina" en uno y "Cortinas" en otro),
+  o se crearán dos botones distintos.
 
 ---
 
@@ -145,8 +139,9 @@ Cuando tengas un **dominio propio** (por ejemplo
 - Repasa que no falte ninguna **coma** o **comilla** donde la tocaste.
 - Comprueba que la `categoria` del producto está **escrita igual** que
   en la lista de categorías.
-- Si te lías, vuelve a abrir `datos.js` y deshaz tu último cambio
-  (tecla **Ctrl + Z** en el Bloc de notas).
+- Si te lías editando, deshaz tu último cambio con **Ctrl + Z**.
+- En `productos.csv`, comprueba que cada fila tiene sus columnas
+  separadas por punto y coma (`;`) y que guardaste manteniendo formato CSV.
 
 ---
 

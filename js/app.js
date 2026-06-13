@@ -4,6 +4,72 @@
     que coge tus datos del archivo datos.js y los muestra en la web.)
    =================================================================== */
 
+// Aquí se guardarán los productos y categorías leídos de "productos.csv"
+let PRODUCTOS = [];
+let CATEGORIAS = [];
+
+/* -------------------------------------------------------------------
+   LECTOR DE "productos.csv"
+   Lee el archivo productos.csv y lo convierte en la lista de productos.
+   El CSV usa punto y coma (;) como separador (compatible con Excel español).
+   ------------------------------------------------------------------- */
+async function cargarProductos() {
+  try {
+    const respuesta = await fetch("productos.csv?v=" + Date.now());
+    if (!respuesta.ok) throw new Error("No se encontró productos.csv");
+    const texto = await respuesta.text();
+    PRODUCTOS = analizarCSV(texto);
+  } catch (e) {
+    console.warn("Aviso al cargar productos.csv:", e.message);
+    PRODUCTOS = [];
+  }
+  // Las categorías se sacan solas de los productos (en orden de aparición)
+  CATEGORIAS = [];
+  PRODUCTOS.forEach(p => {
+    if (p.categoria && CATEGORIAS.indexOf(p.categoria) === -1) CATEGORIAS.push(p.categoria);
+  });
+}
+
+// Convierte el texto del CSV en una lista de productos
+function analizarCSV(texto) {
+  const lineas = texto.replace(/\r/g, "").split("\n").filter(l => l.trim() !== "");
+  if (lineas.length < 2) return [];
+  const cabeceras = lineas[0].split(";").map(h => h.trim().toLowerCase());
+  const productos = [];
+
+  for (let i = 1; i < lineas.length; i++) {
+    const celdas = partirLinea(lineas[i]);
+    const fila = {};
+    cabeceras.forEach((cab, j) => { fila[cab] = (celdas[j] || "").trim(); });
+
+    // "destacado": acepta si / sí / x / true / 1
+    const dest = (fila.destacado || "").toLowerCase();
+    productos.push({
+      nombre: fila.nombre || "",
+      categoria: fila.categoria || "",
+      precio: fila.precio || "",
+      descripcion: fila.descripcion || "",
+      imagen: fila.imagen ? "imagenes/" + fila.imagen : "",
+      destacado: ["si", "sí", "x", "true", "1"].indexOf(dest) !== -1
+    });
+  }
+  return productos.filter(p => p.nombre); // ignora filas sin nombre
+}
+
+// Separa una línea por ; respetando el texto entre comillas
+function partirLinea(linea) {
+  const resultado = [];
+  let actual = "", dentroComillas = false;
+  for (let i = 0; i < linea.length; i++) {
+    const c = linea[i];
+    if (c === '"') { dentroComillas = !dentroComillas; }
+    else if (c === ";" && !dentroComillas) { resultado.push(actual); actual = ""; }
+    else { actual += c; }
+  }
+  resultado.push(actual);
+  return resultado;
+}
+
 // --- Iconos de redes sociales (SVG) ---
 const ICONO_FACEBOOK = '<svg viewBox="0 0 24 24"><path d="M22 12c0-5.5-4.5-10-10-10S2 6.5 2 12c0 5 3.7 9.1 8.4 9.9v-7H7.9V12h2.5V9.8c0-2.5 1.5-3.9 3.8-3.9 1.1 0 2.2.2 2.2.2v2.5h-1.3c-1.2 0-1.6.8-1.6 1.6V12h2.8l-.4 2.9h-2.3v7C18.3 21.1 22 17 22 12z"/></svg>';
 const ICONO_INSTAGRAM = '<svg viewBox="0 0 24 24"><path d="M12 2.2c3.2 0 3.6 0 4.9.1 1.2.1 1.8.2 2.2.4.6.2 1 .5 1.4.9.4.4.7.8.9 1.4.2.4.3 1 .4 2.2.1 1.3.1 1.7.1 4.9s0 3.6-.1 4.9c-.1 1.2-.2 1.8-.4 2.2-.2.6-.5 1-.9 1.4-.4.4-.8.7-1.4.9-.4.2-1 .3-2.2.4-1.3.1-1.7.1-4.9.1s-3.6 0-4.9-.1c-1.2-.1-1.8-.2-2.2-.4-.6-.2-1-.5-1.4-.9-.4-.4-.7-.8-.9-1.4-.2-.4-.3-1-.4-2.2C2.2 15.6 2.2 15.2 2.2 12s0-3.6.1-4.9c.1-1.2.2-1.8.4-2.2.2-.6.5-1 .9-1.4.4-.4.8-.7 1.4-.9.4-.2 1-.3 2.2-.4C8.4 2.2 8.8 2.2 12 2.2zm0 1.8c-3.1 0-3.5 0-4.7.1-.9 0-1.4.2-1.7.3-.4.2-.7.4-1 .7-.3.3-.5.6-.7 1-.1.3-.3.8-.3 1.7-.1 1.2-.1 1.6-.1 4.7s0 3.5.1 4.7c0 .9.2 1.4.3 1.7.2.4.4.7.7 1 .3.3.6.5 1 .7.3.1.8.3 1.7.3 1.2.1 1.6.1 4.7.1s3.5 0 4.7-.1c.9 0 1.4-.2 1.7-.3.4-.2.7-.4 1-.7.3-.3.5-.6.7-1 .1-.3.3-.8.3-1.7.1-1.2.1-1.6.1-4.7s0-3.5-.1-4.7c0-.9-.2-1.4-.3-1.7-.2-.4-.4-.7-.7-1-.3-.3-.6-.5-1-.7-.3-.1-.8-.3-1.7-.3-1.2-.1-1.6-.1-4.7-.1zm0 3.1a4.9 4.9 0 110 9.8 4.9 4.9 0 010-9.8zm0 8.1a3.2 3.2 0 100-6.4 3.2 3.2 0 000 6.4zm6.3-8.3a1.15 1.15 0 11-2.3 0 1.15 1.15 0 012.3 0z"/></svg>';
@@ -271,12 +337,14 @@ function activarSubirArriba() {
 }
 
 // --- Arranque ---
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
   rellenarDatos();
+  activarMenuMovil();
+  activarSubirArriba();
+
+  await cargarProductos();   // lee productos.csv
   crearFiltros();
   mostrarProductos("Todos");
   mostrarDestacados();
-  activarMenuMovil();
   activarLista();
-  activarSubirArriba();
 });
