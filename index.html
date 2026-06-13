@@ -11,7 +11,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Nunito+Sans:wght@400;600;700&display=swap" rel="stylesheet">
 
-  <link rel="stylesheet" href="css/estilos.css">
+  <link rel="stylesheet" href="css/estilos.css?v=2">
 </head>
 <body>
 
@@ -109,13 +109,34 @@
     </div>
   </footer>
 
-  <!-- Botón flotante de WhatsApp -->
+  <!-- Botón flotante para abrir la lista de selección -->
+  <button class="lista-flotante" id="lista-flotante" aria-label="Ver mi lista">
+    🛍️ <span class="lista-contador" id="lista-contador">0</span>
+  </button>
+
+  <!-- Panel de la lista de selección -->
+  <div class="lista-fondo" id="lista-fondo"></div>
+  <aside class="lista-panel" id="lista-panel" aria-label="Mi lista de productos">
+    <div class="lista-cabecera">
+      <h3>Mi lista</h3>
+      <button class="lista-cerrar" id="lista-cerrar" aria-label="Cerrar">✕</button>
+    </div>
+    <div class="lista-cuerpo" id="lista-cuerpo"><!-- productos seleccionados --></div>
+    <div class="lista-pie">
+      <a class="boton-wpp boton-wpp-grande" id="lista-enviar" target="_blank" rel="noopener">
+        <svg viewBox="0 0 32 32" fill="currentColor"><path d="M16 .4C7.4.4.5 7.3.5 15.9c0 2.8.7 5.4 2 7.8L.4 31.6l8.1-2.1c2.3 1.2 4.8 1.9 7.5 1.9 8.6 0 15.5-6.9 15.5-15.5S24.6.4 16 .4zm7.1 18.7c-.4-.2-2.3-1.1-2.6-1.3-.4-.1-.6-.2-.9.2-.3.4-1 1.3-1.2 1.5-.2.2-.4.3-.8.1-.4-.2-1.6-.6-3.1-1.9-1.1-1-1.9-2.3-2.1-2.7-.2-.4 0-.6.2-.8l.6-.7c.2-.2.3-.4.4-.7.1-.2 0-.5-.1-.7-.1-.2-.9-2.2-1.3-3-.3-.8-.7-.7-.9-.7h-.8c-.3 0-.7.1-1 .5-.4.4-1.3 1.3-1.3 3.1s1.3 3.6 1.5 3.9c.2.3 2.6 4 6.3 5.6.9.4 1.6.6 2.1.8.9.3 1.7.2 2.3.1.7-.1 2.3-.9 2.6-1.8.3-.9.3-1.6.2-1.8-.1-.2-.3-.3-.7-.5z"/></svg>
+        Enviar mi lista por WhatsApp
+      </a>
+    </div>
+  </aside>
+
+  <!-- Botón flotante de WhatsApp (consulta directa) -->
   <a href="#" class="whatsapp-flotante" id="whatsapp-flotante" target="_blank" rel="noopener" aria-label="Escríbenos por WhatsApp">
     <svg viewBox="0 0 32 32" width="30" height="30" fill="currentColor"><path d="M16 .4C7.4.4.5 7.3.5 15.9c0 2.8.7 5.4 2 7.8L.4 31.6l8.1-2.1c2.3 1.2 4.8 1.9 7.5 1.9 8.6 0 15.5-6.9 15.5-15.5S24.6.4 16 .4zm0 28.3c-2.4 0-4.6-.6-6.5-1.8l-.5-.3-4.8 1.3 1.3-4.7-.3-.5c-1.2-2-1.9-4.3-1.9-6.8C3 8.9 8.9 3 16 3s13 5.9 13 12.9-5.8 12.8-13 12.8zm7.1-9.6c-.4-.2-2.3-1.1-2.6-1.3-.4-.1-.6-.2-.9.2-.3.4-1 1.3-1.2 1.5-.2.2-.4.3-.8.1-.4-.2-1.6-.6-3.1-1.9-1.1-1-1.9-2.3-2.1-2.7-.2-.4 0-.6.2-.8.2-.2.4-.4.6-.7.2-.2.3-.4.4-.7.1-.2 0-.5-.1-.7-.1-.2-.9-2.2-1.3-3-.3-.8-.7-.7-.9-.7h-.8c-.3 0-.7.1-1 .5-.4.4-1.3 1.3-1.3 3.1s1.3 3.6 1.5 3.9c.2.3 2.6 4 6.3 5.6.9.4 1.6.6 2.1.8.9.3 1.7.2 2.3.1.7-.1 2.3-.9 2.6-1.8.3-.9.3-1.6.2-1.8-.1-.2-.3-.3-.7-.5z"/></svg>
   </a>
 
   <!-- Primero los datos (lo que tú editas), después la lógica -->
-  <script src="js/datos.js"></script>
-  <script src="js/app.js"></script>
+  <script src="js/datos.js?v=2"></script>
+  <script src="js/app.js?v=2"></script>
 </body>
 </html>

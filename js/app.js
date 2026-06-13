@@ -14,13 +14,14 @@ function enlaceWhatsApp(mensaje) {
   return "https://wa.me/" + NEGOCIO.whatsapp + "?text=" + encodeURIComponent(mensaje);
 }
 
-// --- Dibuja una tarjeta de producto ---
+// --- Dibuja una tarjeta de producto (id = posición del producto en PRODUCTOS) ---
 function crearTarjeta(p) {
-  const mensaje = "¡Hola " + NEGOCIO.nombre + "! Me interesa este producto: " + p.nombre +
-                  (p.precio ? " (" + p.precio + ")" : "") + ". ¿Me dais más información?";
+  const id = PRODUCTOS.indexOf(p);
   const imagen = p.imagen
     ? '<img src="' + p.imagen + '" alt="' + p.nombre + '" loading="lazy" onerror="this.parentElement.innerHTML=\'<div class=&quot;sin-foto&quot;><span>🖼️</span>Sin foto</div>\'">'
     : '<div class="sin-foto"><span>🖼️</span>Foto próximamente</div>';
+
+  const enLista = estaEnLista(id);
 
   return `
     <article class="tarjeta">
@@ -33,9 +34,9 @@ function crearTarjeta(p) {
         <p class="tarjeta-desc">${p.descripcion || ""}</p>
         <div class="tarjeta-pie">
           <span class="tarjeta-precio">${p.precio || ""}</span>
-          <a class="boton-wpp" href="${enlaceWhatsApp(mensaje)}" target="_blank" rel="noopener">
-            ${ICONO_WPP} Consultar
-          </a>
+          <button class="boton-anadir ${enLista ? "anadido" : ""}" data-id="${id}">
+            ${enLista ? "✓ Añadido" : "+ Añadir"}
+          </button>
         </div>
       </div>
     </article>`;
@@ -162,6 +163,113 @@ function activarMenuMovil() {
   );
 }
 
+/* ===================================================================
+   MI LISTA — selección de productos y envío por WhatsApp
+   =================================================================== */
+
+// Guardamos los ids (posición en PRODUCTOS) de lo seleccionado
+let MI_LISTA = [];
+
+function estaEnLista(id) { return MI_LISTA.indexOf(id) !== -1; }
+
+// Añade o quita un producto de la lista
+function alternarEnLista(id) {
+  const pos = MI_LISTA.indexOf(id);
+  if (pos === -1) MI_LISTA.push(id);
+  else MI_LISTA.splice(pos, 1);
+  actualizarContador();
+  refrescarBotonesAnadir();
+  pintarLista();
+}
+
+// Actualiza el número del botón flotante
+function actualizarContador() {
+  const c = document.getElementById("lista-contador");
+  c.textContent = MI_LISTA.length;
+  c.parentElement.classList.toggle("tiene-items", MI_LISTA.length > 0);
+}
+
+// Refresca el texto de todos los botones "Añadir" visibles
+function refrescarBotonesAnadir() {
+  document.querySelectorAll(".boton-anadir").forEach(boton => {
+    const id = Number(boton.dataset.id);
+    const dentro = estaEnLista(id);
+    boton.classList.toggle("anadido", dentro);
+    boton.textContent = dentro ? "✓ Añadido" : "+ Añadir";
+  });
+}
+
+// Dibuja el contenido del panel de la lista
+function pintarLista() {
+  const cuerpo = document.getElementById("lista-cuerpo");
+  if (!MI_LISTA.length) {
+    cuerpo.innerHTML = '<p class="lista-vacia">Tu lista está vacía.<br>Pulsa <strong>"+ Añadir"</strong> en los productos que te interesen.</p>';
+    document.getElementById("lista-enviar").classList.add("desactivado");
+    return;
+  }
+  document.getElementById("lista-enviar").classList.remove("desactivado");
+
+  cuerpo.innerHTML = MI_LISTA.map(id => {
+    const p = PRODUCTOS[id];
+    return `<div class="lista-item">
+        <div class="lista-item-info">
+          <strong>${p.nombre}</strong>
+          <span>${p.precio || ""}</span>
+        </div>
+        <button class="lista-item-quitar" data-id="${id}" aria-label="Quitar">✕</button>
+      </div>`;
+  }).join("");
+
+  // Botón de quitar dentro del panel
+  cuerpo.querySelectorAll(".lista-item-quitar").forEach(b =>
+    b.addEventListener("click", () => alternarEnLista(Number(b.dataset.id)))
+  );
+
+  // Actualiza el enlace de WhatsApp con el mensaje genérico
+  document.getElementById("lista-enviar").href = enlaceWhatsApp(construirMensajeLista());
+}
+
+// Construye el mensaje genérico con lo seleccionado
+function construirMensajeLista() {
+  let texto = "¡Hola " + NEGOCIO.nombre + "! Me interesan estos productos:\n";
+  MI_LISTA.forEach((id, i) => {
+    const p = PRODUCTOS[id];
+    texto += "\n" + (i + 1) + ". " + p.nombre + (p.precio ? " (" + p.precio + ")" : "");
+  });
+  texto += "\n\n¿Me podéis dar más información y disponibilidad? Gracias.";
+  return texto;
+}
+
+// Abrir / cerrar el panel
+function abrirPanel(abrir) {
+  document.getElementById("lista-panel").classList.toggle("abierto", abrir);
+  document.getElementById("lista-fondo").classList.toggle("visible", abrir);
+}
+
+// Conecta todos los eventos de la lista
+function activarLista() {
+  // Clic en cualquier botón "+ Añadir" (delegación de eventos)
+  document.body.addEventListener("click", (e) => {
+    const boton = e.target.closest(".boton-anadir");
+    if (boton) alternarEnLista(Number(boton.dataset.id));
+  });
+
+  document.getElementById("lista-flotante").addEventListener("click", () => { pintarLista(); abrirPanel(true); });
+  document.getElementById("lista-cerrar").addEventListener("click", () => abrirPanel(false));
+  document.getElementById("lista-fondo").addEventListener("click", () => abrirPanel(false));
+
+  actualizarContador();
+  pintarLista();
+}
+
+// --- Al pulsar el nombre del título, subir arriba del todo ---
+function activarSubirArriba() {
+  document.querySelector(".logo").addEventListener("click", (e) => {
+    e.preventDefault();
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  });
+}
+
 // --- Arranque ---
 document.addEventListener("DOMContentLoaded", () => {
   rellenarDatos();
@@ -169,4 +277,6 @@ document.addEventListener("DOMContentLoaded", () => {
   mostrarProductos("Todos");
   mostrarDestacados();
   activarMenuMovil();
+  activarLista();
+  activarSubirArriba();
 });

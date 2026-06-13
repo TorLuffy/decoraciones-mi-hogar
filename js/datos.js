@@ -33,10 +33,8 @@ const NEGOCIO = {
   telefono: "+34 822 017 641",
 
   // Número de WhatsApp: SOLO números, con el 34 delante y SIN espacios ni +
-  // OJO: el 822 017 641 es fijo y quizá no tenga WhatsApp.
-  //      Si tenéis un MÓVIL para WhatsApp, pon ese número aquí.
   //      Ejemplo, para el 600 123 456 se pone: "34600123456"
-  whatsapp: "34822017641",
+  whatsapp: "34639456698",
 
   // Correo electrónico (déjalo vacío "" si no quieres mostrarlo)
   email: "decoracionesmihogar@gmail.com",
