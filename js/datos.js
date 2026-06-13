@@ -54,5 +54,5 @@ const NEGOCIO = {
   //   - Si pegas aquí el enlace de publicación CSV de tu Hoja de Google,
   //     los productos saldrán de ahí y podrás editarlos desde el móvil.
   //   (En la GUIA-DE-USO.md, punto 8, te explico cómo conseguir ese enlace.)
-  hojaGoogle: ""
+  hojaGoogle: "https://docs.google.com/spreadsheets/d/e/2PACX-1vQ8CunmdzcJ0vgOzwRZ0aWC3_xs2k_54PshaHox_c41pKD3BGSQj_ilrzbeKuj05FnzDiJfCgFy-5Zt/pub?output=csv"
 };
