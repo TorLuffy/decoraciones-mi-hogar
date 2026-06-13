@@ -1,0 +1,7 @@
+# Carpeta interna de la herramienta (no hace falta publicarla)
+.claude/
+
+# Archivos de sistema
+Thumbs.db
+desktop.ini
+.DS_Store

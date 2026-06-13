@@ -1,0 +1,14 @@
+CARPETA DE IMÁGENES
+===================
+
+Aquí dentro se guardan las fotos de los productos.
+
+Consejos:
+- Nombres sencillos, sin espacios ni acentos. Ej: sabanas.jpg, cafetera.jpg
+- Después, en el archivo js/datos.js, escribe ese nombre en la línea
+  "imagen:" del producto correspondiente. Ejemplo:
+      imagen: "sabanas.jpg",
+- Si un producto no tiene foto, deja la línea así:  imagen: "",
+  y la web mostrará un dibujo gris (no pasa nada).
+
+Puedes borrar este archivo LEEME.txt cuando quieras.
